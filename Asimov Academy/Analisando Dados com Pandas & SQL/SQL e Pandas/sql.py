@@ -11,7 +11,7 @@ c = conn.cursor()
 
 # c.execute('CREATE TABLE Products (products_id, product_name, price)')
 
-# c.execute('DROP TABLE Products')
+# c.execute('DROP TABLE data')
 
 c.execute('CREATE TABLE Products ([products_id] INTEGER PRIMARY KEY, [product_name] TEXT, [price] INTEGER)')
 
@@ -28,3 +28,28 @@ conn.commit()
 # Cria uma tabela a partir da primeira mas selecionando os itens de trás para frente e de 2 em 2.
 df_data2 = df_data.iloc[::-2]
 df_data2.to_sql('data', conn, if_exists='append')
+
+# SELECT
+c.execute('SELECT * FROM data')
+c.fetchone()
+c.fetchall()
+df = pd.DataFrame(c.fetchall())
+
+c.execute('SELECT * FROM data WHERE A > 200 AND B > 100')
+df = pd.DataFrame(c.fetchall())
+
+c.execute('SELECT A, B, C FROM data WHERE A > 200 AND B > 100')
+df = pd.DataFrame(c.fetchall())
+
+query = 'SELECT * FROM data'
+df = pd.read_sql(query, con=conn, index_col='index_name')
+
+# UPDATE e DELETE
+c.execute("UPDATE data SET A=218 WHERE index_name='b'")
+conn.commit()
+
+c.execute("UPDATE data SET A=218, B=228 WHERE index_name='b'")
+conn.commit()
+
+c.execute("DELETE FROM data WHERE index_name=1")
+conn.commit()
